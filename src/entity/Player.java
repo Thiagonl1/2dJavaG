@@ -24,6 +24,8 @@ public class Player extends Entity{
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
         solidArea = new Rectangle(8, 16, 32, 32);
+        solidAreaDefaultX = solidArea.x;
+        solidAreaDefaultY = solidArea.y;
 
         setDefaultValues();
         getPlayerImage();
@@ -42,48 +44,57 @@ public class Player extends Entity{
         try{
             up1 = ImageIO.read(getClass().getResourceAsStream("/player/player_up1.png"));
             up2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+
             down1 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+            down2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down2.png"));
+            down3 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+            down4 = ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png"));
+
             left1 = ImageIO.read(getClass().getResourceAsStream("/player/player_left1.png"));
             left2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+
             right1 = ImageIO.read(getClass().getResourceAsStream("/player/player_right1.png"));
             right2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+
         }catch(IOException e){
             e.printStackTrace();
         }
     }
 
-    public void update(){
+    public void update() {
                 /*
         in JAVA the uppder left corner is X = 0  Y = 0
                 X values increases to the right
                 Y values increases as they go down
                 */
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed){
-            if(keyH.upPressed){
+        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+            if (keyH.upPressed) {
                 direction = "up";
 
             }
-            if(keyH.downPressed){
+            if (keyH.downPressed) {
                 direction = "down";
 
             }
-            if(keyH.leftPressed){
+            if (keyH.leftPressed) {
                 direction = "left";
 
             }
-            if(keyH.rightPressed){
+            if (keyH.rightPressed) {
                 direction = "right";
 
             }
 
             // Check the colllision
             collisionOn = false;
-            gp.cChecker.chechTile(this);
+            gp.cChecker.checkTile(this);
 
-            if(collisionOn == false){
+            int objIndex = gp.cChecker.checkObject(this, true);
+            pickUpObject(objIndex);
 
-                switch(direction){
+            if (collisionOn == false) {
+
+                switch (direction) {
                     case "up":
                         worldY -= speed;
                         break;
@@ -99,10 +110,9 @@ public class Player extends Entity{
                 }
             }
 
-
             spriteCounter++;
-            if(spriteCounter > 12 ){
-                if(spriteNum == 1){
+            if (spriteCounter > 10) {
+                if (spriteNum == 1) {
                     spriteNum = 2;
                 } else if (spriteNum == 2) {
                     spriteNum = 1;
@@ -110,10 +120,21 @@ public class Player extends Entity{
                 spriteCounter = 0;
             }
         }
-
-
-
     }
+
+    public void pickUpObject(int i){
+        if( i != 999){
+            String objectName = gp.obj[i].name;
+
+            switch (objectName){
+                case "Blob":
+                    gp.player.
+                    gp.obj[i] = null;
+                    break;
+            }
+        }
+    }
+
     public void draw(Graphics2D g2){
         // g2.setColor(Color.white);
         // g2.fillRect(x, y, gp.tileSize, gp.tileSize);
@@ -129,9 +150,9 @@ public class Player extends Entity{
                 break;
             case "down":
                 if(spriteNum == 1){
-                    image = down1;
-                }else {
                     image = down2;
+                }else {
+                    image = down4;
                 }
 
                 break;
