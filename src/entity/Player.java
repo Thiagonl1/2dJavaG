@@ -14,7 +14,8 @@ public class Player extends Entity{
     KeyHandler keyH;
     public final int screenX;
     public final int screenY;
-
+    public int hasBlob = 0;
+    public boolean debug = false;
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -67,7 +68,7 @@ public class Player extends Entity{
                 X values increases to the right
                 Y values increases as they go down
                 */
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed) {
+        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.shiftPressed) {
             if (keyH.upPressed) {
                 direction = "up";
 
@@ -82,7 +83,9 @@ public class Player extends Entity{
             }
             if (keyH.rightPressed) {
                 direction = "right";
-
+            }
+            if(keyH.shiftPressed){
+                debug = true;
             }
 
             // Check the colllision
@@ -128,9 +131,34 @@ public class Player extends Entity{
 
             switch (objectName){
                 case "Blob":
-                    gp.player.
-                    gp.obj[i] = null;
+                    gp.player.gp.obj[i] = null;
+
+                    speed += 3;
+
+                    gp.playSE(1);
+
+                    hasBlob +=1;
+
+                    gp.ui.showMessage("You feel excited!");
                     break;
+                case "Chest":
+
+                    gp.ui.gameFinished = true;
+                    gp.stopMusic();
+                    gp.playSE(1);
+                    // WORLD CHANGE
+                    gp.tileM.world =  "/maps/map01.txt";
+                    break;
+
+                case "Door":
+                    if(hasBlob > 0){
+                        gp.playSE(1);
+
+                        hasBlob -=1;
+
+                        gp.player.gp.obj[i] = null;
+
+                    }
             }
         }
     }

@@ -13,6 +13,7 @@ public class TileManager {
     GamePanel gp;
     public Tile[] tile;
     public int mapTileNum[][];
+    public String world = "/maps/world02.txt";
 
     public TileManager(GamePanel gp){
 
@@ -21,7 +22,7 @@ public class TileManager {
         tile = new Tile[6];
         mapTileNum = new int[gp.maxWorldCol] [gp.maxWorldRow];
         getTileImage();
-        loadMap("/maps/world02.txt");
+        loadMap(world);
     }
 
     public void getTileImage(){
