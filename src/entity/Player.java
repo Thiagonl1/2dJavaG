@@ -16,6 +16,9 @@ public class Player extends Entity{
     public final int screenY;
     public int hasBlob = 0;
     public boolean debug = false;
+    int currentFrame = 0;
+    int animationSpeed = 10;
+    BufferedImage[] upFrames, downFrames, leftFrames, rightFrames;
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -25,6 +28,7 @@ public class Player extends Entity{
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
         solidArea = new Rectangle(8, 16, 32, 32);
+
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
 
@@ -43,19 +47,33 @@ public class Player extends Entity{
     public void getPlayerImage(){
 
         try{
-            up1 = ImageIO.read(getClass().getResourceAsStream("/player/player_up1.png"));
-            up2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+            upFrames = new BufferedImage[]{
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_up1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png"))
+            };
 
-            down1 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
-            down2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down2.png"));
-            down3 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
-            down4 = ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png"));
+            downFrames = new BufferedImage[]{
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down2.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"))
 
-            left1 = ImageIO.read(getClass().getResourceAsStream("/player/player_left1.png"));
-            left2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+            };
 
-            right1 = ImageIO.read(getClass().getResourceAsStream("/player/player_right1.png"));
-            right2 = ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"));
+            leftFrames = new BufferedImage[]{
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_left1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"))
+            };
+
+            rightFrames = new BufferedImage[]{
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_right1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png"))
+            };
 
         }catch(IOException e){
             e.printStackTrace();
@@ -71,15 +89,12 @@ public class Player extends Entity{
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.shiftPressed) {
             if (keyH.upPressed) {
                 direction = "up";
-
             }
             if (keyH.downPressed) {
                 direction = "down";
-
             }
             if (keyH.leftPressed) {
                 direction = "left";
-
             }
             if (keyH.rightPressed) {
                 direction = "right";
@@ -114,12 +129,8 @@ public class Player extends Entity{
             }
 
             spriteCounter++;
-            if (spriteCounter > 10) {
-                if (spriteNum == 1) {
-                    spriteNum = 2;
-                } else if (spriteNum == 2) {
-                    spriteNum = 1;
-                }
+            if (spriteCounter > animationSpeed) {
+                currentFrame = (currentFrame + 1) % 3; // Loop through 3 frames
                 spriteCounter = 0;
             }
         }
@@ -164,39 +175,28 @@ public class Player extends Entity{
     }
 
     public void draw(Graphics2D g2){
-        // g2.setColor(Color.white);
+        g2.setColor(Color.RED);
+        g2.drawRect(
+                screenX + solidArea.x,
+                screenY + solidArea.y,
+                solidArea.width,
+                solidArea.height
+        );
         // g2.fillRect(x, y, gp.tileSize, gp.tileSize);
         BufferedImage image = null;
 
         switch(direction){
             case "up":
-                if(spriteNum == 1){
-                    image = up1;
-                }else {
-                    image = up2;
-                }
+                image = upFrames[currentFrame];
                 break;
             case "down":
-                if(spriteNum == 1){
-                    image = down2;
-                }else {
-                    image = down4;
-                }
-
+                image = downFrames[currentFrame];
                 break;
             case "left":
-                if(spriteNum == 1){
-                    image = left1;
-                }else {
-                    image = left2;
-                }
+                image = leftFrames[currentFrame];
                 break;
             case "right":
-                if(spriteNum == 1){
-                    image = right1;
-                }else {
-                    image = right2;
-                }
+                image = rightFrames[currentFrame];
                 break;
         }
         g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
