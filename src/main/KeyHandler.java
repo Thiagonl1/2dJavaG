@@ -2,10 +2,11 @@ package main;
 
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.security.Key;
 
 public class KeyHandler implements KeyListener {
 
-    public boolean upPressed, downPressed, leftPressed, rightPressed, shiftPressed;
+    public boolean upPressed, downPressed, leftPressed, rightPressed, shiftPressed, pKeyPressed;
 
 
     @Override
@@ -31,6 +32,9 @@ public class KeyHandler implements KeyListener {
         if(code == KeyEvent.VK_SHIFT){
             shiftPressed = true;
         }
+        if(code == KeyEvent.VK_P){
+            pKeyPressed = true;
+        }
 
 
     }
@@ -53,6 +57,9 @@ public class KeyHandler implements KeyListener {
         }
         if(code == KeyEvent.VK_SHIFT){
             shiftPressed = false;
+        }
+        if(code == KeyEvent.VK_P){
+            pKeyPressed = false;
         }
     }
 }

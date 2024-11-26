@@ -21,7 +21,7 @@ public class SuperObject {
         int screenY = worldY - gp.player.worldY + gp.player.screenY;
 
         if(worldX > gp.player.worldX - gp.player.screenX - gp.tileSize &&
-                worldX < gp.player.worldX + gp.player.screenX + gp.tileSize&&
+                worldX < gp.player.worldX + gp.player.screenX + gp.tileSize &&
                 worldY > gp.player.worldY - gp.player.screenY - gp.tileSize &&
                 worldY < gp.player.worldY + gp.player.screenY + gp.tileSize){
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);

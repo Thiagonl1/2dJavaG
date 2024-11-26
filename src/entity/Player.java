@@ -8,7 +8,7 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
-public class Player extends Entity{
+public class Player extends Entity {
 
     GamePanel gp;
     KeyHandler keyH;
@@ -18,7 +18,9 @@ public class Player extends Entity{
     public boolean debug = false;
     int currentFrame = 0;
     int animationSpeed = 10;
-    BufferedImage[] upFrames, downFrames, leftFrames, rightFrames;
+    BufferedImage[] upFrames, downFrames, leftFrames, rightFrames, attackDownFrames, attackUpFrames, attackRightFrames, attackLeftFrames;
+    Sword sword;
+
 
     public Player(GamePanel gp, KeyHandler keyH){
         this.gp = gp;
@@ -27,10 +29,12 @@ public class Player extends Entity{
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
 
-        solidArea = new Rectangle(8, 16, 32, 32);
+        solidArea = new Rectangle(8, 16, 32, 32); // 8, 16, 32, 32
 
         solidAreaDefaultX = solidArea.x;
         solidAreaDefaultY = solidArea.y;
+
+        sword = new Sword(gp);
 
         setDefaultValues();
         getPlayerImage();
@@ -45,36 +49,32 @@ public class Player extends Entity{
     }
 
     public void getPlayerImage(){
-
         try{
             upFrames = new BufferedImage[]{
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_up1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png"))
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_up1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down3.png"))
             };
 
             downFrames = new BufferedImage[]{
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down2.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"))
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down2.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down3.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down3.png"))
 
             };
 
             leftFrames = new BufferedImage[]{
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_left1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png"))
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_left1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png"))
             };
-
             rightFrames = new BufferedImage[]{
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_right1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down1.png")),
-                    ImageIO.read(getClass().getResourceAsStream("/player/player_down3.png"))
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_right1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png")),
+                    ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png"))
             };
-
         }catch(IOException e){
             e.printStackTrace();
         }
@@ -86,7 +86,15 @@ public class Player extends Entity{
                 X values increases to the right
                 Y values increases as they go down
                 */
-        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.shiftPressed) {
+
+        // Attack Animation handler
+        if (sword.isAttacking) {
+            sword.update();
+            return; // Skip normal movement while attacking
+        }
+
+        // Movement Handler
+        if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.shiftPressed || keyH.pKeyPressed) {
             if (keyH.upPressed) {
                 direction = "up";
             }
@@ -99,8 +107,12 @@ public class Player extends Entity{
             if (keyH.rightPressed) {
                 direction = "right";
             }
+            if(keyH.pKeyPressed){
+                sword.isAttacking = true;
+            }
             if(keyH.shiftPressed){
                 debug = true;
+                sword.debug = true;
             }
 
             // Check the colllision
@@ -110,7 +122,7 @@ public class Player extends Entity{
             int objIndex = gp.cChecker.checkObject(this, true);
             pickUpObject(objIndex);
 
-            if (collisionOn == false) {
+            if (!collisionOn) {
 
                 switch (direction) {
                     case "up":
@@ -127,12 +139,13 @@ public class Player extends Entity{
                         break;
                 }
             }
-
             spriteCounter++;
             if (spriteCounter > animationSpeed) {
                 currentFrame = (currentFrame + 1) % 3; // Loop through 3 frames
                 spriteCounter = 0;
             }
+        }else{
+            currentFrame = 0;
         }
     }
 
@@ -175,31 +188,58 @@ public class Player extends Entity{
     }
 
     public void draw(Graphics2D g2){
-        g2.setColor(Color.RED);
-        g2.drawRect(
-                screenX + solidArea.x,
-                screenY + solidArea.y,
-                solidArea.width,
-                solidArea.height
-        );
+
         // g2.fillRect(x, y, gp.tileSize, gp.tileSize);
-        BufferedImage image = null;
+        BufferedImage playerImage = null;
+        BufferedImage imageEffect = null;
 
         switch(direction){
             case "up":
-                image = upFrames[currentFrame];
+                playerImage = upFrames[currentFrame];
+                if (sword.isAttacking){
+                    sword.direction = direction;
+                    sword.effectY = screenY - 15;
+                    sword.effectX = screenX;
+                }
                 break;
             case "down":
-                image = downFrames[currentFrame];
+                playerImage = downFrames[currentFrame];
+                if (sword.isAttacking) {
+                    sword.direction = direction;
+                    sword.effectY = screenY+20;
+                    sword.effectX = screenX;
+                }
                 break;
             case "left":
-                image = leftFrames[currentFrame];
-                break;
+                playerImage = leftFrames[currentFrame];
+                if (sword.isAttacking) {
+                    sword.direction = direction;
+                    sword.effectY = screenY;
+                    sword.effectX = screenX-23;
+
+                }
             case "right":
-                image = rightFrames[currentFrame];
+                playerImage = rightFrames[currentFrame];
+
+                if (sword.isAttacking) {
+                    sword.direction = direction;
+                    sword.effectY = screenY-5;
+                    sword.effectX = screenX+23;
+
+                }
                 break;
         }
-        g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+        g2.drawImage(playerImage, screenX, screenY, gp.tileSize, gp.tileSize, null);
+        sword.draw(g2);
+        if (debug){
+            g2.setColor(Color.RED);
+            g2.drawRect(
+                    screenX + solidArea.x,
+                    screenY + solidArea.y,
+                    solidArea.width,
+                    solidArea.height
+            );
+        }
 
     }
 }

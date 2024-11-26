@@ -57,7 +57,7 @@ public class CollisionChecker {
                 entityRightCol = (entityRightWorldX + entity.speed)/gp.tileSize;
                 tileNum1 = gp.tileM.mapTileNum[entityRightCol] [entityBottomRow];
                 tileNum2 = gp.tileM.mapTileNum[entityRightCol] [entityTopRow];
-                if(gp.tileM.tile[tileNum1].collision == true || gp.tileM.tile[tileNum2].collision == true){
+                if(gp.tileM.tile[tileNum1].collision || gp.tileM.tile[tileNum2].collision){
                     entity.collisionOn = true;
                 }
                 break;
