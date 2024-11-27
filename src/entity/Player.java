@@ -48,6 +48,7 @@ public class Player extends Entity {
         direction = "down";
     }
 
+
     public void getPlayerImage(){
         try{
             upFrames = new BufferedImage[]{
@@ -92,7 +93,6 @@ public class Player extends Entity {
             sword.update();
             return; // Skip normal movement while attacking
         }
-
         // Movement Handler
         if (keyH.upPressed || keyH.downPressed || keyH.leftPressed || keyH.rightPressed || keyH.shiftPressed || keyH.pKeyPressed) {
             if (keyH.upPressed) {
@@ -118,6 +118,7 @@ public class Player extends Entity {
             // Check the colllision
             collisionOn = false;
             gp.cChecker.checkTile(this);
+
 
             int objIndex = gp.cChecker.checkObject(this, true);
             pickUpObject(objIndex);
@@ -189,16 +190,14 @@ public class Player extends Entity {
 
     public void draw(Graphics2D g2){
 
-        // g2.fillRect(x, y, gp.tileSize, gp.tileSize);
         BufferedImage playerImage = null;
-        BufferedImage imageEffect = null;
 
         switch(direction){
             case "up":
                 playerImage = upFrames[currentFrame];
                 if (sword.isAttacking){
                     sword.direction = direction;
-                    sword.effectY = screenY - 15;
+                    sword.effectY = screenY-20;
                     sword.effectX = screenX;
                 }
                 break;
@@ -214,10 +213,11 @@ public class Player extends Entity {
                 playerImage = leftFrames[currentFrame];
                 if (sword.isAttacking) {
                     sword.direction = direction;
-                    sword.effectY = screenY;
+                    sword.effectY = screenY-5;
                     sword.effectX = screenX-23;
 
                 }
+                break;
             case "right":
                 playerImage = rightFrames[currentFrame];
 
@@ -225,12 +225,15 @@ public class Player extends Entity {
                     sword.direction = direction;
                     sword.effectY = screenY-5;
                     sword.effectX = screenX+23;
-
                 }
                 break;
+
         }
+
         g2.drawImage(playerImage, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
         sword.draw(g2);
+
         if (debug){
             g2.setColor(Color.RED);
             g2.drawRect(
@@ -240,6 +243,7 @@ public class Player extends Entity {
                     solidArea.height
             );
         }
+
 
     }
 }

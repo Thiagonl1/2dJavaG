@@ -22,7 +22,7 @@ public class Sword extends Entity{
     public Sword(GamePanel gp){
         this.gp = gp;
 
-        solidArea = new Rectangle(8, 16, 14, 32);
+        solidArea = new Rectangle(effectX, effectY, 14, 32);
 
         screenX = gp.screenWidth/2 - (gp.tileSize/2);
         screenY = gp.screenHeight/2 - (gp.tileSize/2);
@@ -84,12 +84,9 @@ public class Sword extends Entity{
             }
 
             collisionOn = false;
-            gp.cChecker.checkTile(this);
-            if(!collisionOn){
-                System.out.println("Collision ON!");
-            }
-
             // si funciona mal agregale esta linea   return; // Skip normal movement while attacking
+            gp.cChecker.checkTile(this);
+
         }
     }
 
@@ -99,26 +96,31 @@ public class Sword extends Entity{
             switch (direction){
                 case "up":
                     effect = attackUpFrames[(attackFrameCounter / animationSpeed) % attackUpFrames.length];
-                    effectY = screenY;
+                    effectY = screenY - 15;
                     effectX = screenX;
+                    adjustSolidArea(4, -10, 40,25);
                     break;
 
                 case "down":
                     effect = attackDownFrames[(attackFrameCounter / animationSpeed) % attackDownFrames.length];
-                    effectY = screenY;
+                    effectY = screenY+20;
                     effectX = screenX;
+                    adjustSolidArea(4, 40, 40,25);
                     break;
 
                 case "left":
                     effect = attackLeftFrames[(attackFrameCounter / animationSpeed) % attackLeftFrames.length];
                     effectY = screenY;
-                    effectX = screenX;
+                    effectX = screenX-23;
+                    adjustSolidArea(-20, 0, 25,40);
                     break;
 
                 case "right":
                     effect = attackRightFrames[(attackFrameCounter / animationSpeed) % attackRightFrames.length];
-                    effectY = screenY;
-                    effectX = screenX;
+                    effectY = screenY-5;
+                    effectX = screenX+23;
+
+                    adjustSolidArea(45, 0, 25,40);
                     break;
             }
             if(effect != null){
@@ -137,6 +139,13 @@ public class Sword extends Entity{
 
 
         }
+    }
+
+    public void adjustSolidArea(int x, int y, int width, int height){
+        solidArea.x = x;
+        solidArea.y = y;
+        solidArea.width = width;
+        solidArea.height = height;
     }
 
 
