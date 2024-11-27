@@ -84,8 +84,10 @@ public class Sword extends Entity{
             }
 
             collisionOn = false;
-            // si funciona mal agregale esta linea   return; // Skip normal movement while attacking
-            gp.cChecker.checkTile(this);
+
+
+            // CAMBIAR
+            gp.cChecker.checkEntity(this, gp.player);
 
         }
     }

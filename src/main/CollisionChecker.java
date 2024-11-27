@@ -1,6 +1,8 @@
 package main;
 
 import entity.Entity;
+import entity.Player;
+import entity.Sword;
 
 public class CollisionChecker {
 
@@ -9,6 +11,12 @@ public class CollisionChecker {
     public CollisionChecker(GamePanel gp){
         this.gp = gp;
     }
+
+    public int checkEntity(Entity enabler,Entity reciever){
+        System.out.println("a");
+        return 0;
+    }
+
 
     public void checkTile(Entity entity){
         int entityLeftWorldX = entity.worldX + entity.solidArea.x;
@@ -77,7 +85,6 @@ public class CollisionChecker {
                 gp.obj[i].solidArea.y = gp.obj[i].worldY + gp.obj[i].solidArea.y;
 
                 switch(entity.direction) {
-
 
                     case "up":
                         entity.solidArea.y -= entity.speed;

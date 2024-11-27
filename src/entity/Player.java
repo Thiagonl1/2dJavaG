@@ -120,7 +120,7 @@ public class Player extends Entity {
             gp.cChecker.checkTile(this);
 
 
-            int objIndex = gp.cChecker.checkObject(this, true);
+            int objIndex = gp.cChecker.checkObject(this, false);
             pickUpObject(objIndex);
 
             if (!collisionOn) {
@@ -195,6 +195,11 @@ public class Player extends Entity {
         switch(direction){
             case "up":
                 playerImage = upFrames[currentFrame];
+
+                if(sword.isAttacking){
+                    sword.draw(g2);
+                }
+
                 if (sword.isAttacking){
                     sword.direction = direction;
                     sword.effectY = screenY-20;
@@ -232,7 +237,10 @@ public class Player extends Entity {
 
         g2.drawImage(playerImage, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
-        sword.draw(g2);
+        if(direction != "up"){
+            sword.draw(g2);
+        }
+
 
         if (debug){
             g2.setColor(Color.RED);
