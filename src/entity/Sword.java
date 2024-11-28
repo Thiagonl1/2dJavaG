@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 
 public class Sword extends Entity{
 
-    GamePanel gp;
+
     private int attackFrameCounter = 0;
     int effectY;
     int effectX;
@@ -20,7 +20,7 @@ public class Sword extends Entity{
     public boolean debug = false;
 
     public Sword(GamePanel gp){
-        this.gp = gp;
+        super(gp);
 
         solidArea = new Rectangle(effectX, effectY, 14, 32);
 
@@ -67,8 +67,8 @@ public class Sword extends Entity{
     }
 
     public void setDefaultValues() {
-        worldX = gp.tileSize * 23;
-        worldY = gp.tileSize * 21;
+        //worldX = gp.tileSize * 23;
+        //worldY = gp.tileSize * 21;
         speed = 4;
         direction = "down";
     }

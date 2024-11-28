@@ -2,6 +2,7 @@ package main;
 import Object.OBJ_Blob;
 import Object.OBJ_Door;
 import Object.OBJ_Chest;
+import entity.Npcs.NPC_Oldman;
 
 public class AssetSetter {
     GamePanel gp;
@@ -34,7 +35,12 @@ public class AssetSetter {
         gp.obj[1] = new OBJ_Blob();
         gp.obj[1].worldX = 25 * gp.tileSize;
         gp.obj[1].worldY   = 38 * gp.tileSize;
+    }
 
+    public void setNPC(){
+        gp.npc[0] = new NPC_Oldman(gp);
+        gp.npc[0].worldX = gp.tileSize *21;
+        gp.npc[0].worldY = gp.tileSize *21;
 
     }
 
