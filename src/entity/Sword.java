@@ -129,7 +129,7 @@ public class Sword extends Entity{
                 g2.drawImage(effect, effectX, effectY, gp.tileSize, gp.tileSize, null);
 
                 if(debug){
-                    g2.setColor(Color.RED);
+                    g2.setColor(Color.yellow);
                     g2.drawRect(
                             screenX + solidArea.x,
                             screenY + solidArea.y,

@@ -120,7 +120,7 @@ public class Player extends Entity {
             gp.cChecker.checkTile(this);
 
 
-            int objIndex = gp.cChecker.checkObject(this, false);
+            int objIndex = gp.cChecker.checkObject(this, true);
             pickUpObject(objIndex);
 
             if (!collisionOn) {

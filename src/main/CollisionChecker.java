@@ -13,7 +13,10 @@ public class CollisionChecker {
     }
 
     public int checkEntity(Entity enabler,Entity reciever){
-        System.out.println("a");
+        if(enabler.solidArea.intersects(reciever.solidArea)){
+            System.out.println("a");
+        }
+
         return 0;
     }
 
