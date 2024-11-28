@@ -2,12 +2,14 @@ package main;
 import Object.SuperObject;
 import entity.Entity;
 import entity.Player;
+import entity.Sword;
 import tiles.TileManager;
 import javax.swing.JPanel;
 import java.awt.*;
 
 public class GamePanel extends JPanel implements Runnable{
     // DEBUG MODE
+    public boolean debug = false;
 
     // SCREEN SETTINGS
     final int originalTileSize = 16; // 16x16 tile

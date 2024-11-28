@@ -18,6 +18,7 @@ public class Entity {
     public BufferedImage[] upFrames, downFrames, leftFrames, rightFrames;
     public int currentFrame = 0;
     public int actionLockCounter;
+    public String name;
 
     public Entity(GamePanel gp){
         this.gp = gp;
@@ -27,11 +28,15 @@ public class Entity {
     public void update(){
 
         setAction();
+
+
+
         collisionOn = false;
         gp.cChecker.checkTile(this);
+        gp.cChecker.checkObject(this, false);
+        gp.cChecker.checkPlayer(this);
 
         if (!collisionOn) {
-
             switch (direction) {
                 case "up":
                     worldY -= speed;
@@ -47,8 +52,6 @@ public class Entity {
                     break;
             }
         }
-
-
     }
 
     public void draw(Graphics2D g2) {
@@ -79,6 +82,16 @@ public class Entity {
             }
 
             g2.drawImage(image, screenX, screenY, gp.tileSize, gp.tileSize, null);
+
+            if (gp.debug) {
+                g2.setColor(Color.RED);
+                g2.drawRect(
+                        screenX + solidArea.x,
+                        screenY + solidArea.y,
+                        solidArea.width,
+                        solidArea.height
+                );
+            }
         }
 
 

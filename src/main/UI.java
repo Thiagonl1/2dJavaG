@@ -52,7 +52,7 @@ public class UI {
 
 
             // COORDINATES WORLDX AND WORLDY
-            if(gp.player.debug){
+            if(gp.debug){
                 g2.drawString("X ="+ gp.player.worldX/gp.tileSize, 50,100);
                 g2.drawString("Y ="+ gp.player.worldY/gp.tileSize, 50,140);
             }

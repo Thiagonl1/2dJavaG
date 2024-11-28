@@ -15,20 +15,19 @@ public class Player extends Entity {
     public final int screenX;
     public final int screenY;
     public int hasBlob = 0;
-    public boolean debug = false;
     int currentFrame = 0;
     int animationSpeed = 10;
     Sword sword;
 
 
-    public Player(GamePanel gp, KeyHandler keyH){
+    public Player(GamePanel gp, KeyHandler keyH) {
 
         super(gp);
 
         this.keyH = keyH;
 
-        screenX = gp.screenWidth/2 - (gp.tileSize/2);
-        screenY = gp.screenHeight/2 - (gp.tileSize/2);
+        screenX = gp.screenWidth / 2 - (gp.tileSize / 2);
+        screenY = gp.screenHeight / 2 - (gp.tileSize / 2);
 
         solidArea = new Rectangle(8, 16, 32, 32); // 8, 16, 32, 32
 
@@ -50,8 +49,8 @@ public class Player extends Entity {
     }
 
 
-    public void getPlayerImage(){
-        try{
+    public void getPlayerImage() {
+        try {
             upFrames = new BufferedImage[]{
                     ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_up1.png")),
                     ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png")),
@@ -76,7 +75,7 @@ public class Player extends Entity {
                     ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png")),
                     ImageIO.read(getClass().getResourceAsStream("/player/Walk/player_down1.png"))
             };
-        }catch(IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -107,17 +106,21 @@ public class Player extends Entity {
             if (keyH.rightPressed) {
                 direction = "right";
             }
-            if(keyH.pKeyPressed){
+            if (keyH.pKeyPressed) {
                 sword.isAttacking = true;
             }
-            if(keyH.shiftPressed){
-                debug = true;
-                sword.debug = true;
+            if (keyH.shiftPressed) {
+                gp.debug = true;
+
             }
 
             // Check the colllision
             collisionOn = false;
             gp.cChecker.checkTile(this);
+
+            // Check npc collision
+            int entityIndex = gp.cChecker.checkEntity(this, gp.npc);
+            interactEntity(entityIndex);
 
 
             int objIndex = gp.cChecker.checkObject(this, true);
@@ -145,16 +148,16 @@ public class Player extends Entity {
                 currentFrame = (currentFrame + 1) % 3; // Loop through 3 frames
                 spriteCounter = 0;
             }
-        }else{
+        } else {
             currentFrame = 0;
         }
     }
 
-    public void pickUpObject(int i){
-        if( i != 999){
+    public void pickUpObject(int i) {
+        if (i != 999) {
             String objectName = gp.obj[i].name;
 
-            switch (objectName){
+            switch (objectName) {
                 case "Blob":
                     gp.player.gp.obj[i] = null;
 
@@ -162,7 +165,7 @@ public class Player extends Entity {
 
                     gp.playSE(1);
 
-                    hasBlob +=1;
+                    hasBlob += 1;
 
                     gp.ui.showMessage("You feel excited!");
                     break;
@@ -172,14 +175,14 @@ public class Player extends Entity {
                     gp.stopMusic();
                     gp.playSE(1);
                     // WORLD CHANGE
-                    gp.tileM.world =  "/maps/map01.txt";
+                    gp.tileM.world = "/maps/map01.txt";
                     break;
 
                 case "Door":
-                    if(hasBlob > 0){
+                    if (hasBlob > 0) {
                         gp.playSE(1);
 
-                        hasBlob -=1;
+                        hasBlob -= 1;
 
                         gp.player.gp.obj[i] = null;
 
@@ -188,21 +191,21 @@ public class Player extends Entity {
         }
     }
 
-    public void draw(Graphics2D g2){
+    public void draw(Graphics2D g2) {
 
         BufferedImage playerImage = null;
 
-        switch(direction){
+        switch (direction) {
             case "up":
                 playerImage = upFrames[currentFrame];
 
-                if(sword.isAttacking){
+                if (sword.isAttacking) {
                     sword.draw(g2);
                 }
 
-                if (sword.isAttacking){
+                if (sword.isAttacking) {
                     sword.direction = direction;
-                    sword.effectY = screenY-20;
+                    sword.effectY = screenY - 20;
                     sword.effectX = screenX;
                 }
                 break;
@@ -210,7 +213,7 @@ public class Player extends Entity {
                 playerImage = downFrames[currentFrame];
                 if (sword.isAttacking) {
                     sword.direction = direction;
-                    sword.effectY = screenY+20;
+                    sword.effectY = screenY + 20;
                     sword.effectX = screenX;
                 }
                 break;
@@ -218,8 +221,8 @@ public class Player extends Entity {
                 playerImage = leftFrames[currentFrame];
                 if (sword.isAttacking) {
                     sword.direction = direction;
-                    sword.effectY = screenY-5;
-                    sword.effectX = screenX-23;
+                    sword.effectY = screenY - 5;
+                    sword.effectX = screenX - 23;
 
                 }
                 break;
@@ -228,8 +231,8 @@ public class Player extends Entity {
 
                 if (sword.isAttacking) {
                     sword.direction = direction;
-                    sword.effectY = screenY-5;
-                    sword.effectX = screenX+23;
+                    sword.effectY = screenY - 5;
+                    sword.effectX = screenX + 23;
                 }
                 break;
 
@@ -237,12 +240,12 @@ public class Player extends Entity {
 
         g2.drawImage(playerImage, screenX, screenY, gp.tileSize, gp.tileSize, null);
 
-        if(direction != "up"){
+        if (direction != "up") {
             sword.draw(g2);
         }
 
 
-        if (debug){
+        if (gp.debug) {
             g2.setColor(Color.RED);
             g2.drawRect(
                     screenX + solidArea.x,
@@ -251,7 +254,15 @@ public class Player extends Entity {
                     solidArea.height
             );
         }
-
-
     }
+
+
+    public void interactEntity(int i){
+        if(i != 999){
+            System.out.println("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        }
+    }
+
+
 }
+

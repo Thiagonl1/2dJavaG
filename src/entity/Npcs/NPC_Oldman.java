@@ -16,6 +16,7 @@ public class NPC_Oldman extends Entity {
         super(gp);
         speed = 1;
         direction = "down";
+        name = "Random";
 
         getNPCImage();
     }

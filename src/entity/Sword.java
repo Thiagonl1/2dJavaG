@@ -17,7 +17,6 @@ public class Sword extends Entity{
     int animationSpeed = 7;
     BufferedImage[] attackRightFrames, attackDownFrames, attackUpFrames, attackLeftFrames;
     public boolean isAttacking = false;
-    public boolean debug = false;
 
     public Sword(GamePanel gp){
         super(gp);
@@ -83,11 +82,12 @@ public class Sword extends Entity{
                 attackFrameCounter = 0; // Reset counter
             }
 
+
+            int entityIndex = gp.cChecker.checkEntity(this, gp.npc);
+            checkEnemy(entityIndex);
+
             collisionOn = false;
 
-
-            // CAMBIAR
-            gp.cChecker.checkEntity(this, gp.player);
 
         }
     }
@@ -128,7 +128,7 @@ public class Sword extends Entity{
             if(effect != null){
                 g2.drawImage(effect, effectX, effectY, gp.tileSize, gp.tileSize, null);
 
-                if(debug){
+                if(gp.debug){
                     g2.setColor(Color.yellow);
                     g2.drawRect(
                             screenX + solidArea.x,
@@ -149,6 +149,15 @@ public class Sword extends Entity{
         solidArea.width = width;
         solidArea.height = height;
     }
+
+    public void checkEnemy(int i){
+
+        if (i != 999) {
+            System.out.println("asihjsaoijhshdoghjsio");
+        }
+
+    }
+
 
 
 }
