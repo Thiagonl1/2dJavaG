@@ -31,7 +31,6 @@ src/
  ├── input/
  └── utils/
 
-
 ##  Estado
 
 Proyecto educativo / experimental.
